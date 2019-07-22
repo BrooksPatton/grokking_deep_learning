@@ -1,20 +1,15 @@
-weight = 0.1
-learning_speed = 0.01
-
-
 def neural_network(input, weight):
-    prediction = input * weight
-    return prediction
+    return input * weight
 
 
-number_of_toes = [8.5]
-won_game = [1]
-input = number_of_toes[0]
-goal_prediction = won_game[0]
+input = 0.5
+weight = 0.2
+expected_prediction = 1.5
+alpha = 0.01
 
-for _ in range(10):
+while True:
     prediction = neural_network(input, weight)
-    error = (prediction - goal_prediction) ** 2
-    error_delta = prediction - goal_prediction
-    possible_new_weight = error_delta * input
-    weight = weight - (possible_new_weight * learning_speed)
+    error = (prediction - expected_prediction) ** 2
+    error_delta = (prediction - expected_prediction) * input
+    weight = weight - (error_delta * alpha)
+    print(error, prediction)
