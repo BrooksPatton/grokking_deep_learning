@@ -1,42 +1,41 @@
-def weighted_sum(inputs, weights):
-    assert(len(inputs) == len(weights))
+def vector_multiplication(vector_1, vector_2):
+    assert(len(vector_1) == len(vector_2))
 
-    result = 0
+    result = []
 
-    for index in range(len(inputs)):
-        result = result + (inputs[index] * weights[index])
+    for index in range(len(vector_1)):
+        result.append(vector_1[index] * vector_2[index])
 
     return result
 
 
-def neural_network(inputs, weights):
-    return weighted_sum(inputs, weights)
+def weighted_sum(input, weights):
+    return sum(vector_multiplication(input, weights))
 
 
-def elemental_multiplication(number, vector):
+def scalar_multiplication(scalar, vector):
     result = []
 
     for item in vector:
-        result.append(item * number)
+        result.append(scalar * item)
 
     return result
 
 
+def neural_network(input, weights):
+    return weighted_sum(input, weights)
+
+
+input = [8.5, 0.65, 1.2]
 weights = [0.1, 0.2, -0.1]
+correct_prediction = 1023
 alpha = 0.01
 
-number_of_toes = [8.5, 9.5, 9.9, 9.0]
-win_loss_percentage = [0.65, 0.8, 0.8, 0.9]
-number_of_fans = [1.2, 1.3, 0.5, 1.0]
+for _ in range(9):
+    prediction = neural_network(input, weights)
+    prediction_delta = prediction - correct_prediction
+    error = prediction_delta ** 2
+    weighted_prediction_deltas = scalar_multiplication(prediction_delta, input)
 
-games_won_or_lost = [1, 1, 0, 1]
-game_result = games_won_or_lost[0]
-input = [number_of_toes[0], win_loss_percentage[0], number_of_fans[0]]
-
-prediction = neural_network(input, weights)
-error = (prediction - game_result) ** 2
-error_delta = prediction - game_result
-weighted_error_deltas = elemental_multiplication(error_delta, input)
-
-for index in range(len(weights)):
-    weights[index] = weights[index] - (alpha * weighted_error_deltas[index])
+    for index in range(len(weights)):
+        weights[0] = weights[0] - (weighted_prediction_deltas[index] * alpha)
