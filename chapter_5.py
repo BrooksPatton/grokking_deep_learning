@@ -1,41 +1,35 @@
-def vector_multiplication(vector_1, vector_2):
-    assert(len(vector_1) == len(vector_2))
-
-    result = []
-
-    for index in range(len(vector_1)):
-        result.append(vector_1[index] * vector_2[index])
-
-    return result
-
-
-def weighted_sum(input, weights):
-    return sum(vector_multiplication(input, weights))
-
-
-def scalar_multiplication(scalar, vector):
-    result = []
-
-    for item in vector:
-        result.append(scalar * item)
-
-    return result
-
-
 def neural_network(input, weights):
-    return weighted_sum(input, weights)
+    return scalar_vector_multipy(input, weights)
 
 
-input = [8.5, 0.65, 1.2]
-weights = [0.1, 0.2, -0.1]
-correct_prediction = 1023
-alpha = 0.01
+def scalar_vector_multipy(scalar, vector):
+    result = []
 
-for _ in range(9):
-    prediction = neural_network(input, weights)
-    prediction_delta = prediction - correct_prediction
-    error = prediction_delta ** 2
-    weighted_prediction_deltas = scalar_multiplication(prediction_delta, input)
+    for number in vector:
+        result.append(scalar * number)
 
-    for index in range(len(weights)):
-        weights[0] = weights[0] - (weighted_prediction_deltas[index] * alpha)
+    return result
+
+
+input = 0.65
+goals = [0.1, 1, 0.1]
+alpha = 0.1
+weights = [0.3, 0.2, 0.9]
+
+for _ in range(200):
+
+    # get the predictions
+    predictions = neural_network(input, weights)
+
+    # get the prediction deltas
+    prediction_deltas = map(
+        lambda prediction, goal: prediction - goal, predictions, goals)
+
+    # get the weighted errors
+    weighted_error_deltas = scalar_vector_multipy(input, prediction_deltas)
+
+    # change all the weights
+    weights = list(map(lambda weight, derivative: weight -
+                       (derivative * alpha), weights, weighted_error_deltas))
+
+    print(predictions, weights)
