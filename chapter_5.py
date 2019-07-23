@@ -38,15 +38,35 @@ def calculate_errors(prediction, true):
 
     return errors
 
-# def calculate_weighted_deltas(deltas, input_data):
-#     assert(len(deltas) == len(input_data))
+def calculate_weighted_deltas(deltas, input_data):
+    assert(len(deltas) == len(input_data))
 
-#     weighted_deltas = []
+    weighted_deltas = []
 
-#     for item in input_data:
-#         weighted_deltas.append(scalar_vector_multiply(item, deltas))
+    for item in input_data:
+        weighted_deltas.append(scalar_vector_multiply(item, deltas))
 
-#     return weighted_deltas
+    return weighted_deltas
+
+def scalar_vector_multiply(scalar, vector):
+    result = []
+
+    for item in vector:
+        result.append(scalar * item)
+
+    return result
+
+def update_weights(weights, weighted_deltas, alpha):
+    assert(len(weights) == len(weighted_deltas))
+
+    for weights_y_index in range(len(weights)):
+        assert(len(weights[weights_y_index]) == len(weighted_deltas[weights_y_index]))
+
+        for weights_x_index in range(len(weights[0])):
+            current_weight = weights[weights_y_index][weights_x_index]
+            
+            weights[weights_y_index][weights_x_index] = current_weight - (weighted_deltas[weights_y_index][weights_x_index] * alpha)
+
 
 def testing():
     print('testing weighted_sum')
@@ -82,9 +102,35 @@ def testing():
         [5, 10, 15],
         [6, 12, 18]
     ]
-    # assert(calculate_weighted_deltas(deltas, input_data) == expected_outcome)
+    assert(calculate_weighted_deltas(deltas, input_data) == expected_outcome)
 
-testing()
+    print('testing scalar_vector_multiply')
+    scalar = 2
+    vector = [1, 2, 3]
+    expected_outcome = [2, 4, 6]
+    assert(scalar_vector_multiply(scalar, vector) == expected_outcome)
+
+    print('testing update_weights')
+    weights = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ]
+    weighted_deltas = [
+        [9, 8, 7],
+        [6, 5, 4],
+        [3, 2, 1]
+    ]
+    expected_outcome = [
+        [-89, -78, -67],
+        [-56, -45, -34],
+        [-23, -12, -1]
+    ]
+    alpha = 10
+    update_weights(weights, weighted_deltas, alpha)
+    assert(weights == expected_outcome)
+
+# testing()
 
 weights = [
     [0.1, 0.1, -0.3],
@@ -105,9 +151,13 @@ alpha = 0.01
 input_data = [toes[0], win_loss_record[0], number_of_fans[0]]
 true = [hurt[0], win[0], sad[0]]
 
-predictions = neural_network(input_data, weights)
-deltas = calculate_deltas(predictions, true)
-errors = calculate_errors(predictions, true)
-# weighted_deltas = calculate_weighted_deltas(deltas, input)
+for _ in range(5):
 
-# update_weights(weights, weighted_deltas, alpha)
+    predictions = neural_network(input_data, weights)
+    deltas = calculate_deltas(predictions, true)
+    errors = calculate_errors(predictions, true)
+    weighted_deltas = calculate_weighted_deltas(deltas, input_data)
+
+    update_weights(weights, weighted_deltas, alpha)
+
+    print(true, predictions)
