@@ -114,6 +114,62 @@ def create_zeros_matrix(width, height):
     return matrix
 
 
+def test_dot_vector():
+    vector_1 = [1, 2, 3]
+    vector_2 = [4, 5, 6]
+    expected_output = 32
+    assert(dot_vector(vector_1, vector_2) == expected_output)
+
+
+def dot_vector(vector_1, vector_2):
+    assert(len(vector_1) == len(vector_2))
+    result = 0
+    for index in range(len(vector_1)):
+        result = result + (vector_1[index] * vector_2[index])
+    return result
+
+
+def test_calculate_error():
+    predictions = [1, 2, 3, 4, 5]
+    correct_outcomes = [6, 7, 8, 9, 10]
+    expected_output = [25, 25, 25, 25, 25]
+    assert(calculate_error(predictions, correct_outcomes) == expected_output)
+
+
+def test_calculate_error_using_more_realistic_data():
+    predictions = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+    correct_outcomes = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    expected_output = [1, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+    assert(calculate_error(predictions, correct_outcomes) == expected_output)
+
+
+def calculate_error(predictions, expected_outcomes):
+    assert(len(predictions) == len(expected_outcomes))
+    errors = []
+    for index in range(len(predictions)):
+        errors.append((predictions[index] - expected_outcomes[index]) ** 2)
+    return errors
+
+
+def test_calculate_delta():
+    predictions = [100, 90, 80]
+    expected_outcomes = [10, 5, 1]
+    expected_result = [90, 85, 79]
+    assert(calculate_delta(predictions, expected_outcomes) == expected_result)
+
+
+def train(inputs, weights, alpha, expected_outcomes):
+    prediction = neural_network(inputs, weights)
+    errors = calculate_error(prediction, expected_outcomes)
+
+
+def neural_network(inputs, weights):
+    prediction = []
+    for weight_row in weights:
+        prediction.append(dot_vector(inputs, weights))
+    return prediction
+
+
 if __name__ == "__main__":
     from keras.datasets import mnist
 
@@ -130,3 +186,4 @@ if __name__ == "__main__":
 
     weights = create_zeros_matrix(
         len(mnist_images[0]), len(correct_outputs[0]))
+    alpha = 0.01
