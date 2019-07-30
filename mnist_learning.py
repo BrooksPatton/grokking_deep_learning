@@ -158,9 +158,43 @@ def test_calculate_delta():
     assert(calculate_delta(predictions, expected_outcomes) == expected_result)
 
 
+def calculate_delta(predictions, expected_predictions):
+    assert(len(predictions) == len(expected_predictions))
+
+    results = []
+
+    for index in range(len(predictions)):
+        results.append(predictions[index] - expected_predictions[index])
+
+    return results
+
+
+def test_outer_product():
+    inputs = [1, 2, 3, 4, 5]
+    deltas = [6, 7, 8]
+    expected_outcomes = [
+        [6, 12, 18, 24, 30],
+        [7, 14, 21, 28, 35],
+        [8, 16, 24, 32, 40]
+    ]
+    assert(outer_product(inputs, deltas) == expected_outcomes)
+
+
+def outer_product(vector_1, vector_2):
+    matrix = create_zeros_matrix(len(vector_1), len(vector_2))
+
+    for vector_2_index in range(len(vector_2)):
+        for vector_1_index in range(len(vector_1)):
+            matrix[vector_2_index][vector_1_index] = vector_2[vector_2_index] * \
+                vector_1[vector_1_index]
+
+    return matrix
+
+
 def train(inputs, weights, alpha, expected_outcomes):
     prediction = neural_network(inputs, weights)
     errors = calculate_error(prediction, expected_outcomes)
+    deltas = calculate_delta(prediction, expected_outcomes)
 
 
 def neural_network(inputs, weights):
