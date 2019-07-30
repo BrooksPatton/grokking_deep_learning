@@ -190,17 +190,67 @@ def outer_product(vector_1, vector_2):
 
     return matrix
 
+def test_scalar_matrix_multiply():
+    scalar = 2
+    matrix = [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8]
+    ]
+    expected_outcomes = [
+        [2, 4, 6, 8],
+        [10, 12, 14, 16]
+    ]
+    assert(scalar_matrix_multiply(scalar, matrix) == expected_outcomes)
 
-def train(inputs, weights, alpha, expected_outcomes):
-    prediction = neural_network(inputs, weights)
-    errors = calculate_error(prediction, expected_outcomes)
-    deltas = calculate_delta(prediction, expected_outcomes)
+def scalar_matrix_multiply(scalar, matrix):
+    result = create_zeros_matrix(len(matrix[0]), len(matrix))
 
+    for y_index in range(len(matrix)):
+        for x_index in range(len(matrix[0])):
+            result[y_index][x_index] = matrix[y_index][x_index] * scalar
+
+    return result
+
+def test_matrix_subtract():
+    matrix_1 = [
+        [100, 90, 80, 70],
+        [60, 50, 40, 30]
+    ]
+    matrix_2 = [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8]
+    ]
+    expected_outcomes = [
+        [99, 88, 77, 66],
+        [55, 44, 33, 22]
+    ]
+
+    assert(matrix_subtract(matrix_1, matrix_2) == expected_outcomes)
+
+def matrix_subtract(matrix_1, matrix_2):
+    result = create_zeros_matrix(len(matrix_1[0]), len(matrix_1))
+
+    for y_index in range(len(matrix_1)):
+        for x_index in range(len(matrix_1[0])):
+            result[y_index][x_index] = matrix_1[y_index][x_index] - matrix_2[y_index][x_index]
+    
+    return result
+
+def train(all_inputs, weights, alpha, all_expected_outcomes):
+    for index in range(len(all_inputs)):
+        inputs = all_inputs[index]
+        expected_outcomes = all_expected_outcomes[index]
+        prediction = neural_network(inputs, weights)
+        errors = calculate_error(prediction, expected_outcomes)
+        deltas = calculate_delta(prediction, expected_outcomes)
+        weighted_deltas = outer_product(inputs, deltas)
+        scaled_weighted_deltas = scalar_matrix_multiply(alpha, weighted_deltas)
+        weights = matrix_subtract(weights, scaled_weighted_deltas)
 
 def neural_network(inputs, weights):
     prediction = []
     for weight_row in weights:
-        prediction.append(dot_vector(inputs, weights))
+        prediction.append(dot_vector(inputs, weight_row))
     return prediction
 
 
@@ -220,4 +270,6 @@ if __name__ == "__main__":
 
     weights = create_zeros_matrix(
         len(mnist_images[0]), len(correct_outputs[0]))
-    alpha = 0.01
+    alpha = 0.0000001
+
+    train(mnist_images, weights, alpha, correct_outputs)
