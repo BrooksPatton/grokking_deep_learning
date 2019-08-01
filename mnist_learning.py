@@ -1,3 +1,6 @@
+import deep_learning_functions as dl
+
+
 def test_concatentate_lists():
     lists = [
         [1, 2, 3],
@@ -209,15 +212,26 @@ if __name__ == "__main__":
 
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-    raw_mnist_images = x_train[0:1000]
-    mnist_images = convert_mnist_images_to_lists(raw_mnist_images)
-    mnist_labels = y_train[0:1000]
-    correct_outputs = []
+    raw_mnist_training_images = x_train[0:1000]
+    mnist_training_images = convert_mnist_images_to_lists(
+        raw_mnist_training_images)
+    mnist_training_labels = y_train[0:1000]
+    correct_training_outputs = []
+    raw_mnist_checking_images = x_train[1000:1500]
+    mnist_checking_images = convert_mnist_images_to_lists(
+        raw_mnist_checking_images)
+    mnist_checking_labels = y_train[1000:1500]
+    correct_checking_outputs = []
 
-    for mnist_label in list(mnist_labels):
-        correct_outputs.append(
+    for mnist_label in list(mnist_training_labels):
+        correct_training_outputs.append(
             convert_number_to_decimal_output(mnist_label))
 
-    weights = create_zeros_matrix(
-        len(mnist_images[0]), len(correct_outputs[0]))
-    alpha = 0.01
+    for mnist_label in list(mnist_checking_labels):
+        correct_checking_outputs.append(
+            convert_number_to_decimal_output(mnist_label))
+
+    alpha = 0.0000005
+
+    dl.train(mnist_training_images, correct_training_outputs,
+             mnist_checking_images, correct_checking_outputs, alpha)
