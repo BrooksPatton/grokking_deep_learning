@@ -269,15 +269,15 @@ if __name__ == "__main__":
 
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-    raw_mnist_training_images = x_train[0:1000]
+    raw_mnist_training_images = x_train[0:10000]
     mnist_training_images = convert_mnist_images_to_lists(
         raw_mnist_training_images)
-    mnist_training_labels = y_train[0:1000]
+    mnist_training_labels = y_train[0:10000]
     correct_training_outputs = []
-    raw_mnist_checking_images = x_train[1000:1500]
+    raw_mnist_checking_images = x_train[10000:10500]
     mnist_checking_images = convert_mnist_images_to_lists(
         raw_mnist_checking_images)
-    mnist_checking_labels = y_train[1000:1500]
+    mnist_checking_labels = y_train[10000:10500]
     correct_checking_outputs = []
 
     for mnist_label in list(mnist_training_labels):
@@ -288,7 +288,7 @@ if __name__ == "__main__":
         correct_checking_outputs.append(
             convert_number_to_decimal_output(mnist_label))
 
-    alpha = 0.0000005
+    alpha = 0.000001
 
     dl.train(mnist_training_images, correct_training_outputs,
              mnist_checking_images, correct_checking_outputs, alpha)

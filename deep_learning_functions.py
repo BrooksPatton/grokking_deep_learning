@@ -25,10 +25,6 @@ def neural_network(inputs, outputs, weights, alpha, testing_inputs, testing_outp
             alpha, weighted_deltas)
         weights = matrix_subtract(weights, limited_weighted_deltas)
 
-        accuracy = check_neural_network(
-            testing_inputs, testing_outputs, weights)
-        print(accuracy)
-
     return weights
 
 
@@ -134,16 +130,19 @@ def max_value_in_array(array):
 
 
 def train(training_inputs, training_outputs, testing_inputs, testing_outputs, alpha):
-    for _ in range(10000):
-        weights = initialize_weights(training_inputs[0], training_outputs[0])
-        weights = neural_network(
-            training_inputs, training_outputs, weights, alpha, testing_inputs, testing_outputs)
-        # accuracy = check_neural_network(
-        #     testing_inputs, testing_outputs, weights)
+    for count in range(1000):
+        if(count % 100 == 0):
+            weights = initialize_weights(
+                training_inputs[0], training_outputs[0])
+            weights = neural_network(
+                training_inputs, training_outputs, weights, alpha, testing_inputs, testing_outputs)
+            accuracy = check_neural_network(
+                testing_inputs, testing_outputs, weights)
 
-        # print(accuracy)
-        # if(accuracy >= 0.7):
-        #     break
+            print(accuracy)
+        if(accuracy >= 0.7):
+            print('accuracy', accuracy)
+            break
 
 # Testing
 
